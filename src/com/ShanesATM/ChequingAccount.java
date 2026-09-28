@@ -20,21 +20,14 @@ public class ChequingAccount extends BankAccount
         this.fee = defaultFee;
     }
 
-    public ChequingAccount(int number,
-                           LocalDate dateOpen,
-                           String first,
-                           String last)
+    public ChequingAccount(int number, LocalDate dateOpen, String first, String last)
     {
         super(number, dateOpen, first, last);
 
         this.fee = defaultFee;
     }
 
-    public ChequingAccount(int number,
-                           LocalDate dateOpen,
-                           String first,
-                           String last,
-                           double fee)
+    public ChequingAccount(int number, LocalDate dateOpen, String first, String last, double fee)
     {
         super(number, dateOpen, first, last);
 
