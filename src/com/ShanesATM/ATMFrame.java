@@ -28,13 +28,16 @@ public class ATMFrame extends JFrame
     private static final Color BACKGROUND = new Color(244, 246, 248);
     private static final Color OFF_WHITE = new Color(250, 248, 242);
 
+    private final ATMAccountManager accountManager;
     private JTextField accountNumberField;
     private JTextArea statusArea;
+    private BankAccount currentAccount;
 
     public ATMFrame()
     {
         super(BankAccount.getBankName());
 
+        accountManager = new ATMAccountManager();
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setContentPane(createMainPanel());
         setPreferredSize(new Dimension(540, 390));
@@ -137,7 +140,8 @@ public class ATMFrame extends JFrame
         loginPanel.add(accountNumberField, constraints);
 
         JButton loginButton = new JButton("Login");
-        loginButton.setToolTipText("Account login will be added in a later step");
+        loginButton.setToolTipText("Log in with your account number");
+        loginButton.addActionListener(event -> handleLogin());
         constraints.gridy = 1;
         constraints.fill = GridBagConstraints.NONE;
         constraints.weightx = 0;
@@ -162,6 +166,47 @@ public class ATMFrame extends JFrame
         loginPanel.add(statusArea, constraints);
 
         return loginPanel;
+    }
+
+    private void handleLogin()
+    {
+        String enteredNumber = accountNumberField.getText().trim();
+
+        if(enteredNumber.isEmpty())
+        {
+            statusArea.setText("Please enter a valid account number.");
+            return;
+        }
+
+        try
+        {
+            int accountNumber = Integer.parseInt(enteredNumber);
+
+            if(accountNumber <= 0)
+            {
+                statusArea.setText("Please enter a valid account number.");
+                return;
+            }
+
+            currentAccount = accountManager.findAccount(accountNumber);
+
+            if(currentAccount != null)
+            {
+                statusArea.setText(String.format(
+                        "Welcome, %s %s. Current balance: %s",
+                        currentAccount.getFirst(),
+                        currentAccount.getLast(),
+                        currentAccount.getBalance()));
+            }
+            else
+            {
+                statusArea.setText("Account not found. Please try again.");
+            }
+        }
+        catch(NumberFormatException exception)
+        {
+            statusArea.setText("Please enter a valid account number.");
+        }
     }
 
     private JPanel createFooterPanel()
