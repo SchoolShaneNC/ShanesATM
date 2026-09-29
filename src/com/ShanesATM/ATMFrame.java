@@ -26,6 +26,7 @@ public class ATMFrame extends JFrame
     private static final Color NAVY = new Color(18, 48, 79);
     private static final Color GOLD = new Color(196, 151, 53);
     private static final Color BACKGROUND = new Color(244, 246, 248);
+    private static final Color OFF_WHITE = new Color(250, 248, 242);
 
     private JTextField accountNumberField;
     private JTextArea statusArea;
@@ -44,13 +45,30 @@ public class ATMFrame extends JFrame
 
     private JPanel createMainPanel()
     {
-        JPanel mainPanel = new JPanel(new BorderLayout(0, 18));
+        JPanel mainPanel = new JPanel(new BorderLayout());
         mainPanel.setBackground(BACKGROUND);
-        mainPanel.setBorder(BorderFactory.createEmptyBorder(22, 28, 22, 28));
 
-        mainPanel.add(createHeaderPanel(), BorderLayout.NORTH);
-        mainPanel.add(createLoginPanel(), BorderLayout.CENTER);
-        mainPanel.add(createFooterPanel(), BorderLayout.SOUTH);
+        /*
+         * The outer border is intentionally inset from the JFrame edges.
+         * This creates a card-like effect instead of making the border
+         * look like the border of the entire window.
+         */
+        JPanel atmPanel = new JPanel(new BorderLayout(0, 18));
+        atmPanel.setBackground(OFF_WHITE);
+        atmPanel.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(OFF_WHITE, 2),
+                BorderFactory.createEmptyBorder(18, 24, 18, 24)
+        ));
+
+        atmPanel.add(createHeaderPanel(), BorderLayout.NORTH);
+        atmPanel.add(createLoginPanel(), BorderLayout.CENTER);
+        atmPanel.add(createFooterPanel(), BorderLayout.SOUTH);
+
+        mainPanel.setBorder(
+                BorderFactory.createEmptyBorder(22, 28, 22, 28)
+        );
+
+        mainPanel.add(atmPanel, BorderLayout.CENTER);
 
         return mainPanel;
     }
@@ -58,35 +76,50 @@ public class ATMFrame extends JFrame
     private JPanel createHeaderPanel()
     {
         JPanel headerPanel = new JPanel(new GridLayout(2, 1, 0, 4));
+
         headerPanel.setBackground(NAVY);
         headerPanel.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(GOLD, 2),
-                BorderFactory.createEmptyBorder(15, 12, 15, 12)));
+                BorderFactory.createEmptyBorder(15, 12, 15, 12)
+        ));
 
-        JLabel bankLabel = new JLabel("SOVEREIGN BANK OF SHANE",
-                SwingConstants.CENTER);
+        JLabel bankLabel = new JLabel(
+                "SOVEREIGN BANK OF SHANE",
+                SwingConstants.CENTER
+        );
+
         bankLabel.setForeground(Color.WHITE);
-        bankLabel.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 21));
+        bankLabel.setFont(
+                new Font(Font.SANS_SERIF, Font.BOLD, 21)
+        );
 
         JLabel welcomeLabel = new JLabel(
-                "Welcome. Secure banking starts here.", SwingConstants.CENTER);
+                "Secure financial sovereignty.",
+                SwingConstants.CENTER
+        );
+
         welcomeLabel.setForeground(new Color(225, 231, 237));
-        welcomeLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 14));
+        welcomeLabel.setFont(
+                new Font(Font.SANS_SERIF, Font.PLAIN, 14)
+        );
 
         headerPanel.add(bankLabel);
         headerPanel.add(welcomeLabel);
+
         return headerPanel;
     }
 
     private JPanel createLoginPanel()
     {
         JPanel loginPanel = new JPanel(new GridBagLayout());
+
         loginPanel.setOpaque(false);
         loginPanel.setBorder(BorderFactory.createTitledBorder(
                 BorderFactory.createLineBorder(new Color(205, 211, 217)),
                 "Account Access"));
 
         GridBagConstraints constraints = new GridBagConstraints();
+
         constraints.insets = new Insets(7, 10, 7, 10);
         constraints.anchor = GridBagConstraints.WEST;
 
@@ -103,16 +136,15 @@ public class ATMFrame extends JFrame
         constraints.weightx = 1.0;
         loginPanel.add(accountNumberField, constraints);
 
-        JButton loginButton = new JButton("Continue");
+        JButton loginButton = new JButton("Login");
         loginButton.setToolTipText("Account login will be added in a later step");
-        constraints.gridx = 1;
         constraints.gridy = 1;
         constraints.fill = GridBagConstraints.NONE;
         constraints.weightx = 0;
         constraints.anchor = GridBagConstraints.EAST;
         loginPanel.add(loginButton, constraints);
 
-        statusArea = new JTextArea("Enter your account number, then select Continue.");
+        statusArea = new JTextArea("Enter your account number, then select Login.");
         statusArea.setEditable(false);
         statusArea.setLineWrap(true);
         statusArea.setWrapStyleWord(true);
@@ -124,7 +156,9 @@ public class ATMFrame extends JFrame
         constraints.gridy = 2;
         constraints.gridwidth = 2;
         constraints.fill = GridBagConstraints.HORIZONTAL;
+        constraints.weightx = 1.0;
         constraints.anchor = GridBagConstraints.WEST;
+        constraints.insets = new Insets(7, 10, 7, 10);
         loginPanel.add(statusArea, constraints);
 
         return loginPanel;
@@ -147,4 +181,3 @@ public class ATMFrame extends JFrame
         return footerPanel;
     }
 }
-
