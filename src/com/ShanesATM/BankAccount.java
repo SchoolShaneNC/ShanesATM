@@ -28,25 +28,16 @@ public abstract class BankAccount
 
         this.number = (number > 0) ? number : 0;
 
-        this.dateOpen =
-                (!dateOpen.isAfter(LocalDate.now()))
-                        ? dateOpen
-                        : LocalDate.now();
+        this.dateOpen = (!dateOpen.isAfter(LocalDate.now())) ? dateOpen : LocalDate.now();
     }
 
-    public BankAccount(int number,
-                       LocalDate dateOpen,
-                       String first,
-                       String last)
+    public BankAccount(int number, LocalDate dateOpen, String first, String last)
     {
         setAccount();
 
         this.number = (number > 0) ? number : 0;
 
-        this.dateOpen =
-                (!dateOpen.isAfter(LocalDate.now()))
-                        ? dateOpen
-                        : LocalDate.now();
+        this.dateOpen = (!dateOpen.isAfter(LocalDate.now())) ? dateOpen : LocalDate.now();
 
         setFirst(first);
         setLast(last);
@@ -143,13 +134,8 @@ public abstract class BankAccount
     @Override
     public String toString()
     {
-        return String.format(
-                "\n\tAccount: %d\n\tName: %s %s\n\tBalance: %s\n\tOpened: %s\n",
-                getNumber(),
-                getFirst(),
-                getLast(),
-                getBalance(),
-                getDateOpen()
+        return String.format( "\n\tAccount: %d\n\tName: %s %s\n\tBalance: %s\n\tOpened: %s\n",
+                getNumber(), getFirst(), getLast(), getBalance(), getDateOpen()
         );
     }
 
