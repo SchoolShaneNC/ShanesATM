@@ -19,49 +19,39 @@ public class ATMAccountManager
 
     private void createInitialAccounts()
     {
-        BankAccount account =
-                new ChequingAccount(1001, LocalDate.of(2024, 1, 15),
-                        "Ava", "Martin");
+        BankAccount account = new ChequingAccount(1001, LocalDate.of(2024, 1, 15), "Ava", "Martin");
         account.deposit(500.00);
         accounts.add(account);
 
-        account = new ChequingAccount(1002, LocalDate.of(2024, 2, 20),
-                "Noah", "Singh");
+        account = new ChequingAccount(1002, LocalDate.of(2024, 2, 20), "Noah", "Singh");
         account.deposit(750.00);
         accounts.add(account);
 
-        account = new ChequingAccount(1003, LocalDate.of(2024, 3, 12),
-                "Mia", "Chen");
+        account = new ChequingAccount(1003, LocalDate.of(2024, 3, 12), "Mia", "Chen");
         account.deposit(1000.00);
         accounts.add(account);
 
-        account = new SavingsAccount(2001, LocalDate.of(2023, 9, 5),
-                "Liam", "Wilson");
+        account = new SavingsAccount(2001, LocalDate.of(2023, 9, 5), "Liam", "Wilson");
         account.deposit(2500.00);
         accounts.add(account);
 
-        account = new SavingsAccount(2002, LocalDate.of(2023, 10, 18),
-                "Emma", "Brown");
+        account = new SavingsAccount(2002, LocalDate.of(2023, 10, 18), "Emma", "Brown");
         account.deposit(3200.00);
         accounts.add(account);
 
-        account = new SavingsAccount(2003, LocalDate.of(2023, 11, 27),
-                "Oliver", "Taylor");
+        account = new SavingsAccount(2003, LocalDate.of(2023, 11, 27), "Oliver", "Taylor");
         account.deposit(1800.00);
         accounts.add(account);
 
-        account = new SuperChequingAccount(3001, LocalDate.of(2024, 4, 8),
-                "Sophia", "Davis");
+        account = new SuperChequingAccount(3001, LocalDate.of(2024, 4, 8), "Sophia", "Davis");
         account.deposit(1200.00);
         accounts.add(account);
 
-        account = new SuperChequingAccount(3002, LocalDate.of(2024, 5, 16),
-                "Ethan", "Moore");
+        account = new SuperChequingAccount(3002, LocalDate.of(2024, 5, 16), "Ethan", "Moore");
         account.deposit(900.00);
         accounts.add(account);
 
-        account = new SuperChequingAccount(3003, LocalDate.of(2024, 6, 24),
-                "Isabella", "Clark");
+        account = new SuperChequingAccount(3003, LocalDate.of(2024, 6, 24), "Isabella", "Clark");
         account.deposit(1500.00);
         accounts.add(account);
     }
@@ -88,5 +78,10 @@ public class ATMAccountManager
         }
 
         return null;
+    }
+    
+    public boolean accountExists(int accountNumber)
+    {
+        return findAccount(accountNumber) != null;
     }
 }

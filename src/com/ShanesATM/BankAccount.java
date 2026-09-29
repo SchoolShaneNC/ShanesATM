@@ -18,7 +18,7 @@ public abstract class BankAccount
 
     private static int count = 0;
 
-    private static final String BANKNAME = "Bank Of Vanscoy";
+    private static final String BANKNAME = "The Sovereign Bank of SHANE";
 
     // Constructors
 
