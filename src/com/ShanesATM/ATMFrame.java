@@ -9,11 +9,13 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
+import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -222,8 +224,10 @@ public class ATMFrame extends JFrame
         JPanel actionPanel = new JPanel(new GridLayout(1, 2, 14, 0));
         actionPanel.setOpaque(false);
         actionPanel.setPreferredSize(new Dimension(340, 80));
-        actionPanel.add(createTransactionPanel("Deposit"));
-        actionPanel.add(createTransactionPanel("Withdraw"));
+        actionPanel.add(createTransactionPanel("Deposit",
+                event -> handleDeposit()));
+        actionPanel.add(createTransactionPanel("Withdraw",
+                event -> handleWithdraw()));
 
         JButton logoutButton = new JButton("Logout");
         logoutButton.addActionListener(event -> handleLogout());
@@ -258,7 +262,8 @@ public class ATMFrame extends JFrame
         return accountPanel;
     }
 
-    private JPanel createTransactionPanel(String buttonText)
+    private JPanel createTransactionPanel(String buttonText,
+                                          ActionListener listener)
     {
         JPanel transactionPanel = new JPanel(new BorderLayout(0, 8));
         transactionPanel.setBackground(NAVY);
@@ -270,11 +275,116 @@ public class ATMFrame extends JFrame
         transactionLabel.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 14));
 
         JButton transactionButton = new JButton(buttonText);
-        transactionButton.setToolTipText(buttonText + " transactions will be added in a later step.");
+        transactionButton.setToolTipText(buttonText + " funds in this account.");
+        transactionButton.addActionListener(listener);
 
         transactionPanel.add(transactionLabel, BorderLayout.NORTH);
         transactionPanel.add(transactionButton, BorderLayout.CENTER);
         return transactionPanel;
+    }
+
+    private void handleDeposit()
+    {
+        if(!hasCurrentAccount())
+        {
+            return;
+        }
+
+        Double amount = promptForAmount("deposit");
+
+        if(amount == null)
+        {
+            return;
+        }
+
+        currentAccount.deposit(amount);
+        updateAccountScreen();
+        showTransactionComplete("Deposit");
+    }
+
+    private void handleWithdraw()
+    {
+        if(!hasCurrentAccount())
+        {
+            return;
+        }
+
+        Double amount = promptForAmount("withdraw");
+
+        if(amount == null)
+        {
+            return;
+        }
+
+        if(currentAccount.withdraw(amount) == 0)
+        {
+            JOptionPane.showMessageDialog(this,
+                    "Withdrawal could not be completed."
+                            + " Please check the amount and available funds.",
+                    "Withdrawal Unavailable",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        updateAccountScreen();
+        showTransactionComplete("Withdrawal");
+    }
+
+    private Double promptForAmount(String transactionType)
+    {
+        String enteredAmount = JOptionPane.showInputDialog(this,
+                "Enter " + transactionType + " amount:",
+                transactionType.substring(0, 1).toUpperCase()
+                        + transactionType.substring(1),
+                JOptionPane.QUESTION_MESSAGE);
+
+        if(enteredAmount == null)
+        {
+            return null;
+        }
+
+        try
+        {
+            double amount = Double.parseDouble(enteredAmount.trim());
+
+            if(!Double.isFinite(amount) || amount <= 0)
+            {
+                throw new NumberFormatException();
+            }
+
+            return amount;
+        }
+        catch(NumberFormatException exception)
+        {
+            JOptionPane.showMessageDialog(this,
+                    "Enter a positive numeric amount.",
+                    "Invalid Amount",
+                    JOptionPane.WARNING_MESSAGE);
+            return null;
+        }
+    }
+
+    private boolean hasCurrentAccount()
+    {
+        if(currentAccount != null)
+        {
+            return true;
+        }
+
+        JOptionPane.showMessageDialog(this,
+                "Please log in to an account first.",
+                "No Account Selected",
+                JOptionPane.WARNING_MESSAGE);
+        return false;
+    }
+
+    private void showTransactionComplete(String transactionType)
+    {
+        JOptionPane.showMessageDialog(this,
+                transactionType + " complete. New balance: "
+                        + currentAccount.getBalance(),
+                transactionType + " Complete",
+                JOptionPane.INFORMATION_MESSAGE);
     }
 
     private void handleLogin()
