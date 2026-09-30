@@ -40,6 +40,7 @@ public class ATMFrame extends JFrame
     private JLabel accountTypeLabel;
     private JLabel accountBalanceLabel;
     private JLabel accountHolderLabel;
+    
 
     public ATMFrame()
     {
@@ -51,15 +52,16 @@ public class ATMFrame extends JFrame
         cardPanel.setOpaque(false);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setContentPane(createMainPanel());
-        setPreferredSize(new Dimension(540, 390));
+        setPreferredSize(new Dimension(540, 530));
         pack();
-        setMinimumSize(new Dimension(480, 350));
+        setMinimumSize(new Dimension(480, 430));
         setLocationRelativeTo(null);
     }
 
     private JPanel createMainPanel()
     {
         JPanel mainPanel = new JPanel(new BorderLayout());
+
         mainPanel.setBackground(BACKGROUND);
 
         /*
@@ -67,15 +69,17 @@ public class ATMFrame extends JFrame
          * This creates a card-like effect instead of making the border
          * look like the border of the entire window.
          */
-        JPanel atmPanel = new JPanel(new BorderLayout(0, 18));
+        JPanel atmPanel = new JPanel(new BorderLayout(0, 10));
         atmPanel.setBackground(OFF_WHITE);
+
         atmPanel.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(OFF_WHITE, 2),
-                BorderFactory.createEmptyBorder(18, 24, 18, 24)
-        ));
+        		BorderFactory.createEmptyBorder(14, 24, 14, 24)));
 
         atmPanel.add(createHeaderPanel(), BorderLayout.NORTH);
+
         cardPanel.add(createLoginPanel(), LOGIN_CARD);
         cardPanel.add(createAccountPanel(), ACCOUNT_CARD);
+
         atmPanel.add(cardPanel, BorderLayout.CENTER);
         atmPanel.add(createFooterPanel(), BorderLayout.SOUTH);
 
@@ -86,23 +90,26 @@ public class ATMFrame extends JFrame
         return mainPanel;
     }
 
+
     private JPanel createHeaderPanel()
     {
-        JPanel headerPanel = new JPanel(new GridLayout(2, 1, 0, 4));
+    	
+        JPanel headerPanel = new JPanel(new GridLayout(2, 1, 0, 2));
 
         headerPanel.setBackground(NAVY);
-        headerPanel.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(GOLD, 2),
-                BorderFactory.createEmptyBorder(15, 12, 15, 12)));
 
-        JLabel bankLabel = new JLabel("SOVEREIGN BANK OF SHANE", SwingConstants.CENTER);
+        headerPanel.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(GOLD, 2),
+                BorderFactory.createEmptyBorder(8, 12, 8, 12)));
+
+        JLabel bankLabel = new JLabel("SOVEREIGN BANK OF SHANE",SwingConstants.CENTER);
 
         bankLabel.setForeground(Color.WHITE);
-        bankLabel.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 21));
+        bankLabel.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 19));
 
         JLabel welcomeLabel = new JLabel("Secure financial sovereignty.", SwingConstants.CENTER);
 
         welcomeLabel.setForeground(new Color(225, 231, 237));
-        welcomeLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 14));
+        welcomeLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 13));
 
         headerPanel.add(bankLabel);
         headerPanel.add(welcomeLabel);
@@ -115,37 +122,49 @@ public class ATMFrame extends JFrame
         JPanel loginPanel = new JPanel(new GridBagLayout());
 
         loginPanel.setOpaque(false);
-        loginPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(205, 211, 217)),
-                "Account Access"));
+        loginPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder( new Color(205, 211, 217)),
+                        "Account Access"));
 
         GridBagConstraints constraints = new GridBagConstraints();
 
         constraints.insets = new Insets(7, 10, 7, 10);
-        constraints.anchor = GridBagConstraints.WEST;
+        constraints.weighty = 0;
 
+        // Account number label
         JLabel accountNumberLabel = new JLabel("Account number:");
         accountNumberLabel.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 14));
+
         constraints.gridx = 0;
         constraints.gridy = 0;
+        constraints.anchor = GridBagConstraints.WEST;
+
         loginPanel.add(accountNumberLabel, constraints);
 
+        // Account number text field
         accountNumberField = new JTextField(18);
         accountNumberField.setToolTipText("Enter your account number");
+
         constraints.gridx = 1;
         constraints.fill = GridBagConstraints.HORIZONTAL;
         constraints.weightx = 1.0;
+
         loginPanel.add(accountNumberField, constraints);
 
+        // Login button
         JButton loginButton = new JButton("Login");
         loginButton.setToolTipText("Log in with your account number");
         loginButton.addActionListener(event -> handleLogin());
+
         constraints.gridy = 1;
         constraints.fill = GridBagConstraints.NONE;
         constraints.weightx = 0;
         constraints.anchor = GridBagConstraints.EAST;
+
         loginPanel.add(loginButton, constraints);
 
+        // Status information
         statusArea = new JTextArea("Enter your account number, then select Login.");
+
         statusArea.setEditable(false);
         statusArea.setLineWrap(true);
         statusArea.setWrapStyleWord(true);
@@ -153,21 +172,24 @@ public class ATMFrame extends JFrame
         statusArea.setOpaque(false);
         statusArea.setForeground(new Color(72, 79, 86));
         statusArea.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 13));
+
         constraints.gridx = 0;
         constraints.gridy = 2;
         constraints.gridwidth = 2;
         constraints.fill = GridBagConstraints.HORIZONTAL;
         constraints.weightx = 1.0;
-        constraints.anchor = GridBagConstraints.WEST;
+        constraints.weighty = 1.0;
+        constraints.anchor = GridBagConstraints.NORTHWEST;
         constraints.insets = new Insets(7, 10, 7, 10);
+
         loginPanel.add(statusArea, constraints);
 
         return loginPanel;
     }
-
+    
     private JPanel createAccountPanel()
     {
-        JPanel accountPanel = new JPanel(new BorderLayout(0, 14));
+        JPanel accountPanel = new JPanel(new GridBagLayout());
         accountPanel.setOpaque(false);
         accountPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(205, 211, 217)),
                 "Account Summary"));
@@ -179,19 +201,19 @@ public class ATMFrame extends JFrame
         constraints.anchor = GridBagConstraints.CENTER;
         constraints.insets = new Insets(5, 10, 5, 10);
 
-        accountTypeLabel = new JLabel();
+        accountTypeLabel = new JLabel("Account Type");
         accountTypeLabel.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 16));
         accountTypeLabel.setForeground(NAVY);
         constraints.gridy = 0;
         summaryPanel.add(accountTypeLabel, constraints);
 
-        accountBalanceLabel = new JLabel();
+        accountBalanceLabel = new JLabel("$0.00");
         accountBalanceLabel.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 32));
         accountBalanceLabel.setForeground(NAVY);
         constraints.gridy = 1;
         summaryPanel.add(accountBalanceLabel, constraints);
 
-        accountHolderLabel = new JLabel();
+        accountHolderLabel = new JLabel("Account holder");
         accountHolderLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 14));
         accountHolderLabel.setForeground(new Color(72, 79, 86));
         constraints.gridy = 2;
@@ -199,6 +221,7 @@ public class ATMFrame extends JFrame
 
         JPanel actionPanel = new JPanel(new GridLayout(1, 2, 14, 0));
         actionPanel.setOpaque(false);
+        actionPanel.setPreferredSize(new Dimension(340, 80));
         actionPanel.add(createTransactionPanel("Deposit"));
         actionPanel.add(createTransactionPanel("Withdraw"));
 
@@ -208,9 +231,30 @@ public class ATMFrame extends JFrame
         logoutPanel.setOpaque(false);
         logoutPanel.add(logoutButton);
 
-        accountPanel.add(summaryPanel, BorderLayout.NORTH);
-        accountPanel.add(actionPanel, BorderLayout.CENTER);
-        accountPanel.add(logoutPanel, BorderLayout.SOUTH);
+        GridBagConstraints accountConstraints = new GridBagConstraints();
+        accountConstraints.gridx = 0;
+        accountConstraints.anchor = GridBagConstraints.CENTER;
+
+        accountConstraints.gridy = 0;
+        accountConstraints.insets = new Insets(4, 10, 2, 10);
+        accountPanel.add(summaryPanel, accountConstraints);
+
+        accountConstraints.gridy = 1;
+        accountConstraints.insets = new Insets(4, 10, 4, 10);
+        accountPanel.add(actionPanel, accountConstraints);
+
+        accountConstraints.gridy = 2;
+        accountConstraints.insets = new Insets(2, 10, 4, 10);
+        accountPanel.add(logoutPanel, accountConstraints);
+
+        // Absorbs extra vertical space so the transaction panels do not stretch.
+        JPanel verticalSpacer = new JPanel();
+        verticalSpacer.setOpaque(false);
+        accountConstraints.gridy = 3;
+        accountConstraints.fill = GridBagConstraints.BOTH;
+        accountConstraints.weighty = 1.0;
+        accountPanel.add(verticalSpacer, accountConstraints);
+
         return accountPanel;
     }
 
@@ -226,8 +270,7 @@ public class ATMFrame extends JFrame
         transactionLabel.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 14));
 
         JButton transactionButton = new JButton(buttonText);
-        transactionButton.setToolTipText(buttonText
-                + " transactions will be added in a later step.");
+        transactionButton.setToolTipText(buttonText + " transactions will be added in a later step.");
 
         transactionPanel.add(transactionLabel, BorderLayout.NORTH);
         transactionPanel.add(transactionButton, BorderLayout.CENTER);
@@ -279,8 +322,7 @@ public class ATMFrame extends JFrame
     {
         accountTypeLabel.setText(getAccountTypeName());
         accountBalanceLabel.setText(currentAccount.getBalance());
-        accountHolderLabel.setText("Account holder: "
-                + currentAccount.getFirst() + " " + currentAccount.getLast());
+        accountHolderLabel.setText("Account holder: " + currentAccount.getFirst() + " " + currentAccount.getLast());
     }
 
     private String getAccountTypeName()
@@ -309,17 +351,23 @@ public class ATMFrame extends JFrame
     private JPanel createFooterPanel()
     {
         JPanel footerPanel = new JPanel(new BorderLayout());
+
         footerPanel.setOpaque(false);
+        footerPanel.setPreferredSize(new Dimension(0, 30));
 
         JLabel securityLabel = new JLabel("Your account information is protected.");
+
         securityLabel.setForeground(new Color(92, 100, 108));
-        securityLabel.setFont(new Font(Font.SANS_SERIF, Font.ITALIC, 12));
+
+        securityLabel.setFont(new Font(Font.SANS_SERIF, Font.ITALIC, 11));
 
         JButton shutdownButton = new JButton("Shutdown");
+
         shutdownButton.addActionListener(event -> dispose());
 
         footerPanel.add(securityLabel, BorderLayout.WEST);
         footerPanel.add(shutdownButton, BorderLayout.EAST);
+
         return footerPanel;
     }
 }
