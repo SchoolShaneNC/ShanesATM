@@ -23,21 +23,14 @@ public class SavingsAccount extends BankAccount
         this.rate = defaultRate;
     }
 
-    public SavingsAccount(int number,
-                          LocalDate dateOpen,
-                          String first,
-                          String last)
+    public SavingsAccount(int number, LocalDate dateOpen, String first, String last)
     {
         super(number, dateOpen, first, last);
 
         this.rate = defaultRate;
     }
 
-    public SavingsAccount(int number,
-                          LocalDate dateOpen,
-                          String first,
-                          String last,
-                          double rate)
+    public SavingsAccount(int number, LocalDate dateOpen, String first, String last, double rate)
     {
         super(number, dateOpen, first, last);
 
@@ -102,9 +95,7 @@ public class SavingsAccount extends BankAccount
     @Override
     public String toString()
     {
-        return super.toString() +
-                String.format("\n\tRate: %.2f%%",
-                rate * 100);
+        return super.toString() + String.format("\n\tRate: %.2f%%", rate * 100);
     }
 
     @Override

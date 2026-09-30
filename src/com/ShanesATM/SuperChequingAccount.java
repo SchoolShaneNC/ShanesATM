@@ -15,31 +15,19 @@ public final class SuperChequingAccount extends ChequingAccount
         this.overDraft = 0;
     }
 
-    public SuperChequingAccount(int number,
-                                LocalDate dateOpen,
-                                String first,
-                                String last)
+    public SuperChequingAccount(int number, LocalDate dateOpen, String first, String last)
     {
         super(number, dateOpen, first, last);
         this.overDraft = 0;
     }
 
-    public SuperChequingAccount(int number,
-                                LocalDate dateOpen,
-                                String first,
-                                String last,
-                                double fee)
+    public SuperChequingAccount(int number, LocalDate dateOpen, String first, String last, double fee)
     {
         super(number, dateOpen, first, last, fee);
         this.overDraft = 0;
     }
 
-    public SuperChequingAccount(int number,
-                                LocalDate dateOpen,
-                                String first,
-                                String last,
-                                double fee,
-                                double overDraft)
+    public SuperChequingAccount(int number, LocalDate dateOpen, String first, String last, double fee, double overDraft)
     {
         super(number, dateOpen, first, last, fee);
         setOverDraft(overDraft);
@@ -64,8 +52,7 @@ public final class SuperChequingAccount extends ChequingAccount
     @Override
     public String toString()
     {
-        return super.toString()
-                + String.format("\n\tDraft: $%.2f", overDraft);
+        return super.toString() + String.format("\n\tDraft: $%.2f", overDraft);
     }
 
     // Override withdraw

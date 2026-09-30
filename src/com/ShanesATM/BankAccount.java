@@ -135,8 +135,7 @@ public abstract class BankAccount
     public String toString()
     {
         return String.format( "\n\tAccount: %d\n\tName: %s %s\n\tBalance: %s\n\tOpened: %s\n",
-                getNumber(), getFirst(), getLast(), getBalance(), getDateOpen()
-        );
+                getNumber(), getFirst(), getLast(), getBalance(), getDateOpen());
     }
 
     @Override

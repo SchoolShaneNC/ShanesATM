@@ -58,8 +58,7 @@ public class ATMFrame extends JFrame
          */
         JPanel atmPanel = new JPanel(new BorderLayout(0, 18));
         atmPanel.setBackground(OFF_WHITE);
-        atmPanel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(OFF_WHITE, 2),
+        atmPanel.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(OFF_WHITE, 2),
                 BorderFactory.createEmptyBorder(18, 24, 18, 24)
         ));
 
@@ -67,9 +66,7 @@ public class ATMFrame extends JFrame
         atmPanel.add(createLoginPanel(), BorderLayout.CENTER);
         atmPanel.add(createFooterPanel(), BorderLayout.SOUTH);
 
-        mainPanel.setBorder(
-                BorderFactory.createEmptyBorder(22, 28, 22, 28)
-        );
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(22, 28, 22, 28));
 
         mainPanel.add(atmPanel, BorderLayout.CENTER);
 
@@ -81,30 +78,18 @@ public class ATMFrame extends JFrame
         JPanel headerPanel = new JPanel(new GridLayout(2, 1, 0, 4));
 
         headerPanel.setBackground(NAVY);
-        headerPanel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(GOLD, 2),
-                BorderFactory.createEmptyBorder(15, 12, 15, 12)
-        ));
+        headerPanel.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(GOLD, 2),
+                BorderFactory.createEmptyBorder(15, 12, 15, 12)));
 
-        JLabel bankLabel = new JLabel(
-                "SOVEREIGN BANK OF SHANE",
-                SwingConstants.CENTER
-        );
+        JLabel bankLabel = new JLabel("SOVEREIGN BANK OF SHANE", SwingConstants.CENTER);
 
         bankLabel.setForeground(Color.WHITE);
-        bankLabel.setFont(
-                new Font(Font.SANS_SERIF, Font.BOLD, 21)
-        );
+        bankLabel.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 21));
 
-        JLabel welcomeLabel = new JLabel(
-                "Secure financial sovereignty.",
-                SwingConstants.CENTER
-        );
+        JLabel welcomeLabel = new JLabel("Secure financial sovereignty.", SwingConstants.CENTER);
 
         welcomeLabel.setForeground(new Color(225, 231, 237));
-        welcomeLabel.setFont(
-                new Font(Font.SANS_SERIF, Font.PLAIN, 14)
-        );
+        welcomeLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 14));
 
         headerPanel.add(bankLabel);
         headerPanel.add(welcomeLabel);
@@ -117,8 +102,7 @@ public class ATMFrame extends JFrame
         JPanel loginPanel = new JPanel(new GridBagLayout());
 
         loginPanel.setOpaque(false);
-        loginPanel.setBorder(BorderFactory.createTitledBorder(
-                BorderFactory.createLineBorder(new Color(205, 211, 217)),
+        loginPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(205, 211, 217)),
                 "Account Access"));
 
         GridBagConstraints constraints = new GridBagConstraints();
@@ -192,9 +176,7 @@ public class ATMFrame extends JFrame
 
             if(currentAccount != null)
             {
-                statusArea.setText(String.format(
-                        "Welcome, %s %s. Current balance: %s",
-                        currentAccount.getFirst(),
+                statusArea.setText(String.format("Welcome, %s %s. Current balance: %s",currentAccount.getFirst(),
                         currentAccount.getLast(),
                         currentAccount.getBalance()));
             }
