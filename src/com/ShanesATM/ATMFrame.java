@@ -1,6 +1,7 @@
 package com.ShanesATM;
 
 import java.awt.BorderLayout;
+import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -23,21 +24,31 @@ import javax.swing.SwingConstants;
  */
 public class ATMFrame extends JFrame
 {
+    private static final String LOGIN_CARD = "Login";
+    private static final String ACCOUNT_CARD = "Account";
     private static final Color NAVY = new Color(18, 48, 79);
     private static final Color GOLD = new Color(196, 151, 53);
     private static final Color BACKGROUND = new Color(244, 246, 248);
     private static final Color OFF_WHITE = new Color(250, 248, 242);
 
     private final ATMAccountManager accountManager;
+    private final CardLayout cardLayout;
+    private final JPanel cardPanel;
     private JTextField accountNumberField;
     private JTextArea statusArea;
     private BankAccount currentAccount;
+    private JLabel accountTypeLabel;
+    private JLabel accountBalanceLabel;
+    private JLabel accountHolderLabel;
 
     public ATMFrame()
     {
         super(BankAccount.getBankName());
 
         accountManager = new ATMAccountManager();
+        cardLayout = new CardLayout();
+        cardPanel = new JPanel(cardLayout);
+        cardPanel.setOpaque(false);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setContentPane(createMainPanel());
         setPreferredSize(new Dimension(540, 390));
@@ -63,7 +74,9 @@ public class ATMFrame extends JFrame
         ));
 
         atmPanel.add(createHeaderPanel(), BorderLayout.NORTH);
-        atmPanel.add(createLoginPanel(), BorderLayout.CENTER);
+        cardPanel.add(createLoginPanel(), LOGIN_CARD);
+        cardPanel.add(createAccountPanel(), ACCOUNT_CARD);
+        atmPanel.add(cardPanel, BorderLayout.CENTER);
         atmPanel.add(createFooterPanel(), BorderLayout.SOUTH);
 
         mainPanel.setBorder(BorderFactory.createEmptyBorder(22, 28, 22, 28));
@@ -152,6 +165,75 @@ public class ATMFrame extends JFrame
         return loginPanel;
     }
 
+    private JPanel createAccountPanel()
+    {
+        JPanel accountPanel = new JPanel(new BorderLayout(0, 14));
+        accountPanel.setOpaque(false);
+        accountPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(205, 211, 217)),
+                "Account Summary"));
+
+        JPanel summaryPanel = new JPanel(new GridBagLayout());
+        summaryPanel.setOpaque(false);
+        GridBagConstraints constraints = new GridBagConstraints();
+        constraints.gridx = 0;
+        constraints.anchor = GridBagConstraints.CENTER;
+        constraints.insets = new Insets(5, 10, 5, 10);
+
+        accountTypeLabel = new JLabel();
+        accountTypeLabel.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 16));
+        accountTypeLabel.setForeground(NAVY);
+        constraints.gridy = 0;
+        summaryPanel.add(accountTypeLabel, constraints);
+
+        accountBalanceLabel = new JLabel();
+        accountBalanceLabel.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 32));
+        accountBalanceLabel.setForeground(NAVY);
+        constraints.gridy = 1;
+        summaryPanel.add(accountBalanceLabel, constraints);
+
+        accountHolderLabel = new JLabel();
+        accountHolderLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 14));
+        accountHolderLabel.setForeground(new Color(72, 79, 86));
+        constraints.gridy = 2;
+        summaryPanel.add(accountHolderLabel, constraints);
+
+        JPanel actionPanel = new JPanel(new GridLayout(1, 2, 14, 0));
+        actionPanel.setOpaque(false);
+        actionPanel.add(createTransactionPanel("Deposit"));
+        actionPanel.add(createTransactionPanel("Withdraw"));
+
+        JButton logoutButton = new JButton("Logout");
+        logoutButton.addActionListener(event -> handleLogout());
+        JPanel logoutPanel = new JPanel();
+        logoutPanel.setOpaque(false);
+        logoutPanel.add(logoutButton);
+
+        accountPanel.add(summaryPanel, BorderLayout.NORTH);
+        accountPanel.add(actionPanel, BorderLayout.CENTER);
+        accountPanel.add(logoutPanel, BorderLayout.SOUTH);
+        return accountPanel;
+    }
+
+    private JPanel createTransactionPanel(String buttonText)
+    {
+        JPanel transactionPanel = new JPanel(new BorderLayout(0, 8));
+        transactionPanel.setBackground(NAVY);
+        transactionPanel.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(GOLD, 1),
+                BorderFactory.createEmptyBorder(12, 12, 12, 12)));
+
+        JLabel transactionLabel = new JLabel(buttonText.toUpperCase(),SwingConstants.CENTER);
+        transactionLabel.setForeground(Color.WHITE);
+        transactionLabel.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 14));
+
+        JButton transactionButton = new JButton(buttonText);
+        transactionButton.setToolTipText(buttonText
+                + " transactions will be added in a later step.");
+
+        transactionPanel.add(transactionLabel, BorderLayout.NORTH);
+        transactionPanel.add(transactionButton, BorderLayout.CENTER);
+        return transactionPanel;
+    }
+
     private void handleLogin()
     {
         String enteredNumber = accountNumberField.getText().trim();
@@ -179,6 +261,8 @@ public class ATMFrame extends JFrame
                 statusArea.setText(String.format("Welcome, %s %s. Current balance: %s",currentAccount.getFirst(),
                         currentAccount.getLast(),
                         currentAccount.getBalance()));
+                updateAccountScreen();
+                cardLayout.show(cardPanel, ACCOUNT_CARD);
             }
             else
             {
@@ -189,6 +273,37 @@ public class ATMFrame extends JFrame
         {
             statusArea.setText("Please enter a valid account number.");
         }
+    }
+
+    private void updateAccountScreen()
+    {
+        accountTypeLabel.setText(getAccountTypeName());
+        accountBalanceLabel.setText(currentAccount.getBalance());
+        accountHolderLabel.setText("Account holder: "
+                + currentAccount.getFirst() + " " + currentAccount.getLast());
+    }
+
+    private String getAccountTypeName()
+    {
+        if(currentAccount instanceof SuperChequingAccount)
+        {
+            return "Super Chequing Account";
+        }
+        else if(currentAccount instanceof SavingsAccount)
+        {
+            return "Savings Account";
+        }
+
+        return "Chequing Account";
+    }
+
+    private void handleLogout()
+    {
+        currentAccount = null;
+        accountNumberField.setText("");
+        statusArea.setText("Enter your account number, then select Login.");
+        cardLayout.show(cardPanel, LOGIN_CARD);
+        accountNumberField.requestFocusInWindow();
     }
 
     private JPanel createFooterPanel()
