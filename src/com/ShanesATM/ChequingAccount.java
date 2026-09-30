@@ -77,8 +77,7 @@ public class ChequingAccount extends BankAccount
     @Override
     public String toString()
     {
-        return super.toString() +
-                String.format("\n\tFee: $%.2f", fee);
+        return super.toString() + String.format("\n\tFee: $%.2f", fee);
     }
 
     @Override
