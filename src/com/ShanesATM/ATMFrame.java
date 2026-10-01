@@ -1,14 +1,18 @@
 package com.ShanesATM;
 
 import java.awt.BorderLayout;
+import java.awt.BasicStroke;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
+import java.awt.RenderingHints;
 import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
@@ -20,14 +24,17 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 
 /**
  * The initial Swing window for the ATM application.
  */
 public class ATMFrame extends JFrame
 {
+    private static final String SPLASH_CARD = "Splash";
     private static final String LOGIN_CARD = "Login";
     private static final String ACCOUNT_CARD = "Account";
+    private static final long SPLASH_DURATION_MS = 5000;
     private static final Color NAVY = new Color(18, 48, 79);
     private static final Color GOLD = new Color(196, 151, 53);
     private static final Color BACKGROUND = new Color(244, 246, 248);
@@ -36,6 +43,7 @@ public class ATMFrame extends JFrame
     private final ATMAccountManager accountManager;
     private final CardLayout cardLayout;
     private final JPanel cardPanel;
+    private final SplashPanel splashPanel;
     private JTextField accountNumberField;
     private JTextArea statusArea;
     private BankAccount currentAccount;
@@ -52,12 +60,15 @@ public class ATMFrame extends JFrame
         cardLayout = new CardLayout();
         cardPanel = new JPanel(cardLayout);
         cardPanel.setOpaque(false);
+        splashPanel = new SplashPanel();
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setContentPane(createMainPanel());
         setPreferredSize(new Dimension(540, 530));
         pack();
         setMinimumSize(new Dimension(480, 430));
         setLocationRelativeTo(null);
+        cardLayout.show(cardPanel, SPLASH_CARD);
+        startSplashAnimation();
     }
 
     private JPanel createMainPanel()
@@ -79,6 +90,7 @@ public class ATMFrame extends JFrame
 
         atmPanel.add(createHeaderPanel(), BorderLayout.NORTH);
 
+        cardPanel.add(splashPanel, SPLASH_CARD);
         cardPanel.add(createLoginPanel(), LOGIN_CARD);
         cardPanel.add(createAccountPanel(), ACCOUNT_CARD);
 
@@ -188,7 +200,7 @@ public class ATMFrame extends JFrame
 
         return loginPanel;
     }
-    
+
     private JPanel createAccountPanel()
     {
         JPanel accountPanel = new JPanel(new GridBagLayout());
@@ -224,10 +236,8 @@ public class ATMFrame extends JFrame
         JPanel actionPanel = new JPanel(new GridLayout(1, 2, 14, 0));
         actionPanel.setOpaque(false);
         actionPanel.setPreferredSize(new Dimension(340, 80));
-        actionPanel.add(createTransactionPanel("Deposit",
-                event -> handleDeposit()));
-        actionPanel.add(createTransactionPanel("Withdraw",
-                event -> handleWithdraw()));
+        actionPanel.add(createTransactionPanel("Deposit", event -> handleDeposit()));
+        actionPanel.add(createTransactionPanel("Withdraw", event -> handleWithdraw()));
 
         JButton logoutButton = new JButton("Logout");
         logoutButton.addActionListener(event -> handleLogout());
@@ -262,8 +272,7 @@ public class ATMFrame extends JFrame
         return accountPanel;
     }
 
-    private JPanel createTransactionPanel(String buttonText,
-                                          ActionListener listener)
+    private JPanel createTransactionPanel(String buttonText, ActionListener listener)
     {
         JPanel transactionPanel = new JPanel(new BorderLayout(0, 8));
         transactionPanel.setBackground(NAVY);
@@ -281,6 +290,29 @@ public class ATMFrame extends JFrame
         transactionPanel.add(transactionLabel, BorderLayout.NORTH);
         transactionPanel.add(transactionButton, BorderLayout.CENTER);
         return transactionPanel;
+    }
+
+    private JPanel createFooterPanel()
+    {
+        JPanel footerPanel = new JPanel(new BorderLayout());
+
+        footerPanel.setOpaque(false);
+        footerPanel.setPreferredSize(new Dimension(0, 30));
+
+        JLabel securityLabel = new JLabel("Your account information is protected.");
+
+        securityLabel.setForeground(new Color(92, 100, 108));
+
+        securityLabel.setFont(new Font(Font.SANS_SERIF, Font.ITALIC, 11));
+
+        JButton shutdownButton = new JButton("Shutdown");
+
+        shutdownButton.addActionListener(event -> dispose());
+
+        footerPanel.add(securityLabel, BorderLayout.WEST);
+        footerPanel.add(shutdownButton, BorderLayout.EAST);
+
+        return footerPanel;
     }
 
     private void handleDeposit()
@@ -318,9 +350,7 @@ public class ATMFrame extends JFrame
 
         if(currentAccount.withdraw(amount) == 0)
         {
-            JOptionPane.showMessageDialog(this,
-                    "Withdrawal could not be completed."
-                            + " Please check the amount and available funds.",
+            JOptionPane.showMessageDialog(this, "Withdrawal could not be completed. Please check available funds.",
                     "Withdrawal Unavailable",
                     JOptionPane.WARNING_MESSAGE);
             return;
@@ -332,10 +362,8 @@ public class ATMFrame extends JFrame
 
     private Double promptForAmount(String transactionType)
     {
-        String enteredAmount = JOptionPane.showInputDialog(this,
-                "Enter " + transactionType + " amount:",
-                transactionType.substring(0, 1).toUpperCase()
-                        + transactionType.substring(1),
+        String enteredAmount = JOptionPane.showInputDialog(this,"Enter " + transactionType + " amount:",
+                transactionType.substring(0, 1).toUpperCase() + transactionType.substring(1),
                 JOptionPane.QUESTION_MESSAGE);
 
         if(enteredAmount == null)
@@ -356,9 +384,7 @@ public class ATMFrame extends JFrame
         }
         catch(NumberFormatException exception)
         {
-            JOptionPane.showMessageDialog(this,
-                    "Enter a positive numeric amount.",
-                    "Invalid Amount",
+            JOptionPane.showMessageDialog(this,"Enter a positive numeric amount.", "Invalid Amount",
                     JOptionPane.WARNING_MESSAGE);
             return null;
         }
@@ -371,18 +397,14 @@ public class ATMFrame extends JFrame
             return true;
         }
 
-        JOptionPane.showMessageDialog(this,
-                "Please log in to an account first.",
-                "No Account Selected",
+        JOptionPane.showMessageDialog(this, "Please log in to an account first.", "No Account Selected",
                 JOptionPane.WARNING_MESSAGE);
         return false;
     }
 
     private void showTransactionComplete(String transactionType)
     {
-        JOptionPane.showMessageDialog(this,
-                transactionType + " complete. New balance: "
-                        + currentAccount.getBalance(),
+        JOptionPane.showMessageDialog(this, transactionType + " complete. New balance: " + currentAccount.getBalance(),
                 transactionType + " Complete",
                 JOptionPane.INFORMATION_MESSAGE);
     }
@@ -458,26 +480,168 @@ public class ATMFrame extends JFrame
         accountNumberField.requestFocusInWindow();
     }
 
-    private JPanel createFooterPanel()
+    
+    
+    private void startSplashAnimation()
     {
-        JPanel footerPanel = new JPanel(new BorderLayout());
+        // This Thread runs the five-second startup animation without blocking Swing.
+        Thread splashThread = new Thread(() ->
+        {
+            long startTime = System.currentTimeMillis();
+            int progress;
 
-        footerPanel.setOpaque(false);
-        footerPanel.setPreferredSize(new Dimension(0, 30));
+            do
+            {
+                long elapsedTime = System.currentTimeMillis() - startTime;
+                progress = (int)Math.min(100,
+                        elapsedTime * 100 / SPLASH_DURATION_MS);
+                int currentProgress = progress;
 
-        JLabel securityLabel = new JLabel("Your account information is protected.");
+                // Swing components are updated on the event-dispatch thread.
+                SwingUtilities.invokeLater(() ->
+                        splashPanel.setProgress(currentProgress));
 
-        securityLabel.setForeground(new Color(92, 100, 108));
+                try
+                {
+                    Thread.sleep(40);
+                }
+                catch(InterruptedException exception)
+                {
+                    Thread.currentThread().interrupt();
+                    return;
+                }
+            }
+            while(progress < 100);
 
-        securityLabel.setFont(new Font(Font.SANS_SERIF, Font.ITALIC, 11));
+            // The final animation update transitions from the splash card to login.
+            SwingUtilities.invokeLater(() ->
+            {
+                splashPanel.setProgress(100);
+                cardLayout.show(cardPanel, LOGIN_CARD);
+                accountNumberField.requestFocusInWindow();
+            });
+        }, "ATM Splash Animation");
 
-        JButton shutdownButton = new JButton("Shutdown");
-
-        shutdownButton.addActionListener(event -> dispose());
-
-        footerPanel.add(securityLabel, BorderLayout.WEST);
-        footerPanel.add(shutdownButton, BorderLayout.EAST);
-
-        return footerPanel;
+        splashThread.setDaemon(true);
+        splashThread.start();
     }
+
+    /**
+     * Draws the vault-door startup animation for the splash card.
+     */
+    private static class SplashPanel extends JPanel
+    {
+        private int progress;
+
+        SplashPanel()
+        {
+            setOpaque(false);
+            setPreferredSize(new Dimension(400, 300));
+        }
+
+        void setProgress(int progress)
+        {
+            this.progress = Math.max(0, Math.min(100, progress));
+            repaint();
+        }
+
+        @Override
+        protected void paintComponent(Graphics graphics)
+        {
+            super.paintComponent(graphics);
+
+            Graphics2D graphics2D = (Graphics2D)graphics.create();
+            graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                    RenderingHints.VALUE_ANTIALIAS_ON);
+
+            int width = getWidth();
+            int height = getHeight();
+            int doorDiameter = Math.min(190,
+                    Math.max(120, Math.min(width - 100, height - 125)));
+            int doorX = (width - doorDiameter) / 2;
+            int doorY = Math.max(18, (height - doorDiameter - 90) / 2);
+            int centerX = doorX + doorDiameter / 2;
+            int centerY = doorY + doorDiameter / 2;
+
+            drawVaultRing(graphics2D, doorX, doorY, doorDiameter);
+            drawVaultDoor(graphics2D, doorX, doorY, doorDiameter,
+                    centerX, centerY);
+            drawProgressBar(graphics2D, doorY + doorDiameter + 28, width);
+
+            graphics2D.dispose();
+        }
+
+        private void drawVaultRing(Graphics2D graphics2D, int doorX,
+                                   int doorY, int doorDiameter)
+        {
+            graphics2D.setColor(GOLD);
+            graphics2D.fillOval(doorX, doorY, doorDiameter, doorDiameter);
+            graphics2D.setColor(new Color(59, 67, 74));
+            graphics2D.fillOval(doorX + 5, doorY + 5,
+                    doorDiameter - 10, doorDiameter - 10);
+            graphics2D.setColor(new Color(28, 35, 42));
+            graphics2D.fillOval(doorX + 14, doorY + 14,
+                    doorDiameter - 28, doorDiameter - 28);
+        }
+
+        private void drawVaultDoor(Graphics2D graphics2D, int doorX,
+                                   int doorY, int doorDiameter,
+                                   int centerX, int centerY)
+        {
+            double opening = progress / 100.0;
+            double doorWidth = 1.0 - opening * 0.68;
+            int hingeX = doorX + 14;
+
+            Graphics2D doorGraphics = (Graphics2D)graphics2D.create();
+            doorGraphics.translate(hingeX, 0);
+            doorGraphics.scale(doorWidth, 1.0);
+            doorGraphics.translate(-hingeX, 0);
+
+            doorGraphics.setColor(new Color(75, 93, 110));
+            doorGraphics.fillOval(doorX + 14, doorY + 14,
+                    doorDiameter - 28, doorDiameter - 28);
+            doorGraphics.setColor(new Color(171, 181, 190));
+            doorGraphics.setStroke(new BasicStroke(4));
+
+            for(int spoke = 0; spoke < 6; spoke++)
+            {
+                double angle = spoke * Math.PI / 3 + opening * Math.PI / 4;
+                int spokeX = centerX + (int)(Math.cos(angle)
+                        * doorDiameter * 0.22);
+                int spokeY = centerY + (int)(Math.sin(angle)
+                        * doorDiameter * 0.22);
+                doorGraphics.drawLine(centerX, centerY, spokeX, spokeY);
+            }
+
+            doorGraphics.setColor(GOLD);
+            doorGraphics.fillOval(centerX - 17, centerY - 17, 34, 34);
+            doorGraphics.setColor(NAVY);
+            doorGraphics.fillOval(centerX - 8, centerY - 8, 16, 16);
+            doorGraphics.dispose();
+        }
+
+        private void drawProgressBar(Graphics2D graphics2D, int barY,
+                                     int width)
+        {
+            int barWidth = Math.min(320, width - 70);
+            int barHeight = 16;
+            int barX = (width - barWidth) / 2;
+            int filledWidth = barWidth * progress / 100;
+
+            graphics2D.setColor(NAVY);
+            graphics2D.fillRoundRect(barX, barY, barWidth, barHeight, 12, 12);
+            graphics2D.setColor(GOLD);
+            graphics2D.fillRoundRect(barX, barY, filledWidth, barHeight, 12, 12);
+            graphics2D.setColor(new Color(59, 67, 74));
+            graphics2D.drawRoundRect(barX, barY, barWidth, barHeight, 12, 12);
+
+            graphics2D.setColor(NAVY);
+            graphics2D.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 13));
+            String message = "INITIALIZING...";
+            int messageWidth = graphics2D.getFontMetrics().stringWidth(message);
+            graphics2D.drawString(message, (width - messageWidth) / 2,
+                    barY + 40);
+        }
+    }
+
 }

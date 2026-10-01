@@ -43,15 +43,15 @@ public class ATMAccountManager
         account.deposit(1800.00);
         accounts.add(account);
 
-        account = new SuperChequingAccount(3001, LocalDate.of(2024, 4, 8), "Sidney", "Crosby");
+        account = new SuperChequingAccount(3001, LocalDate.of(2024, 4, 8), "Sidney", "Crosby", 10, 300);
         account.deposit(1200.00);
         accounts.add(account);
 
-        account = new SuperChequingAccount(3002, LocalDate.of(2024, 5, 16), "Brayden", "Kallumbah");
+        account = new SuperChequingAccount(3002, LocalDate.of(2024, 5, 16), "Brayden", "Kallumbah", 10, 300);
         account.deposit(900.00);
         accounts.add(account);
 
-        account = new SuperChequingAccount(3003, LocalDate.of(2024, 6, 24), "Sergi", "Bobrovsky");
+        account = new SuperChequingAccount(3003, LocalDate.of(2024, 6, 24), "Sergi", "Bobrovsky", 10, 300);
         account.deposit(1500.00);
         accounts.add(account);
     }
