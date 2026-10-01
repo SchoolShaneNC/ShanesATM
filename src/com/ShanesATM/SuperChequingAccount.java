@@ -4,11 +4,10 @@ import java.time.LocalDate;
 
 public final class SuperChequingAccount extends ChequingAccount
 {
-    // Instance variable
+    //instance variable
     private double overDraft;
 
-    // Constructors
-
+    //constructors
     public SuperChequingAccount(int number, LocalDate dateOpen)
     {
         super(number, dateOpen);
@@ -33,30 +32,26 @@ public final class SuperChequingAccount extends ChequingAccount
         setOverDraft(overDraft);
     }
 
-    // Getter
-
+    //gets
     public double getOverDraft()
     {
         return overDraft;
     }
 
-    // Setter
-
+    //sets
     public void setOverDraft(double overDraft)
     {
         this.overDraft = (overDraft >= 0) ? overDraft : 0;
     }
 
-    // Override toString
-
+    //override toString
     @Override
     public String toString()
     {
         return super.toString() + String.format("\n\tDraft: $%.2f", overDraft);
     }
 
-    // Override withdraw
-
+    //override withdraw
     @Override
     public double withdraw(double amount)
     {

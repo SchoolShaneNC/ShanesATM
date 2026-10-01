@@ -26,11 +26,10 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
-/**
- * The initial Swing window for the ATM application.
- */
+//initial window for the atm using swing
 public class ATMFrame extends JFrame
 {
+	//creating seperate cards to switch into the single jframe instead of multiple jframes
     private static final String SPLASH_CARD = "Splash";
     private static final String LOGIN_CARD = "Login";
     private static final String ACCOUNT_CARD = "Account";
@@ -40,6 +39,7 @@ public class ATMFrame extends JFrame
     private static final Color BACKGROUND = new Color(244, 246, 248);
     private static final Color OFF_WHITE = new Color(250, 248, 242);
 
+    //declaring components and classes / current bank account to use 
     private final ATMAccountManager accountManager;
     private final CardLayout cardLayout;
     private final JPanel cardPanel;
@@ -54,6 +54,7 @@ public class ATMFrame extends JFrame
 
     public ATMFrame()
     {
+    	//building the foundation of the frame
         super(BankAccount.getBankName());
 
         accountManager = new ATMAccountManager();
@@ -73,27 +74,29 @@ public class ATMFrame extends JFrame
 
     private JPanel createMainPanel()
     {
+    	// Create the main container for the ATM
         JPanel mainPanel = new JPanel(new BorderLayout());
 
         mainPanel.setBackground(BACKGROUND);
 
-        /*
-         * The outer border is intentionally inset from the JFrame edges.
-         * This creates a card-like effect instead of making the border
-         * look like the border of the entire window.
-         */
+       //main atm panel creation
         JPanel atmPanel = new JPanel(new BorderLayout(0, 10));
         atmPanel.setBackground(OFF_WHITE);
-
+        
+        //creating 2 seperate borders
         atmPanel.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(OFF_WHITE, 2),
         		BorderFactory.createEmptyBorder(14, 24, 14, 24)));
-
+        
+        //creating header and making it be in the top section
         atmPanel.add(createHeaderPanel(), BorderLayout.NORTH);
 
+        //creating 3 seperate cards for the middle center section of panel 
         cardPanel.add(splashPanel, SPLASH_CARD);
         cardPanel.add(createLoginPanel(), LOGIN_CARD);
         cardPanel.add(createAccountPanel(), ACCOUNT_CARD);
 
+        //placing the cards into the main atm center panel
+        //forcing footer to bottom too
         atmPanel.add(cardPanel, BorderLayout.CENTER);
         atmPanel.add(createFooterPanel(), BorderLayout.SOUTH);
 
@@ -107,19 +110,21 @@ public class ATMFrame extends JFrame
 
     private JPanel createHeaderPanel()
     {
-    	
+    	//this builds the header
         JPanel headerPanel = new JPanel(new GridLayout(2, 1, 0, 2));
-
+        
+        //setting colours and borders
         headerPanel.setBackground(NAVY);
 
         headerPanel.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(GOLD, 2),
                 BorderFactory.createEmptyBorder(8, 12, 8, 12)));
-
+        
+        //creating the labels and adding them to the panel
         JLabel bankLabel = new JLabel("SOVEREIGN BANK OF SHANE",SwingConstants.CENTER);
 
         bankLabel.setForeground(Color.WHITE);
         bankLabel.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 19));
-
+        
         JLabel welcomeLabel = new JLabel("Secure financial sovereignty.", SwingConstants.CENTER);
 
         welcomeLabel.setForeground(new Color(225, 231, 237));
@@ -133,6 +138,7 @@ public class ATMFrame extends JFrame
 
     private JPanel createLoginPanel()
     {
+    	//creating the login panel
         JPanel loginPanel = new JPanel(new GridBagLayout());
 
         loginPanel.setOpaque(false);
@@ -144,7 +150,7 @@ public class ATMFrame extends JFrame
         constraints.insets = new Insets(7, 10, 7, 10);
         constraints.weighty = 0;
 
-        // Account number label
+        //creating account number label
         JLabel accountNumberLabel = new JLabel("Account number:");
         accountNumberLabel.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 14));
 
@@ -154,7 +160,7 @@ public class ATMFrame extends JFrame
 
         loginPanel.add(accountNumberLabel, constraints);
 
-        // Account number text field
+        //creating Account number text field
         accountNumberField = new JTextField(18);
         accountNumberField.setToolTipText("Enter your account number");
 
@@ -164,7 +170,7 @@ public class ATMFrame extends JFrame
 
         loginPanel.add(accountNumberField, constraints);
 
-        // Login button
+        //creating login button
         JButton loginButton = new JButton("Login");
         loginButton.setToolTipText("Log in with your account number");
         loginButton.addActionListener(event -> handleLogin());
@@ -176,7 +182,7 @@ public class ATMFrame extends JFrame
 
         loginPanel.add(loginButton, constraints);
 
-        // Status information
+        //status information
         statusArea = new JTextArea("Enter your account number, then select Login.");
 
         statusArea.setEditable(false);
@@ -203,6 +209,7 @@ public class ATMFrame extends JFrame
 
     private JPanel createAccountPanel()
     {
+    	//creating account panel 
         JPanel accountPanel = new JPanel(new GridBagLayout());
         accountPanel.setOpaque(false);
         accountPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(205, 211, 217)),
@@ -261,7 +268,7 @@ public class ATMFrame extends JFrame
         accountConstraints.insets = new Insets(2, 10, 4, 10);
         accountPanel.add(logoutPanel, accountConstraints);
 
-        // Absorbs extra vertical space so the transaction panels do not stretch.
+        //this absorbs extra vertical space so the transaction panels dont stretch.
         JPanel verticalSpacer = new JPanel();
         verticalSpacer.setOpaque(false);
         accountConstraints.gridy = 3;
@@ -274,6 +281,7 @@ public class ATMFrame extends JFrame
 
     private JPanel createTransactionPanel(String buttonText, ActionListener listener)
     {
+    	//creating transaction panels (the buttons)
         JPanel transactionPanel = new JPanel(new BorderLayout(0, 8));
         transactionPanel.setBackground(NAVY);
         transactionPanel.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(GOLD, 1),
@@ -283,6 +291,7 @@ public class ATMFrame extends JFrame
         transactionLabel.setForeground(Color.WHITE);
         transactionLabel.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 14));
 
+        //create the button and connects it to the listener.
         JButton transactionButton = new JButton(buttonText);
         transactionButton.setToolTipText(buttonText + " funds in this account.");
         transactionButton.addActionListener(listener);
@@ -294,6 +303,8 @@ public class ATMFrame extends JFrame
 
     private JPanel createFooterPanel()
     {
+    	//creates the footer
+    	//holds the shutdown button and basic little texts
         JPanel footerPanel = new JPanel(new BorderLayout());
 
         footerPanel.setOpaque(false);
@@ -317,18 +328,21 @@ public class ATMFrame extends JFrame
 
     private void handleDeposit()
     {
+    	//method for deposit
+    	//checks validation for account
         if(!hasCurrentAccount())
         {
             return;
         }
-
+        
+        //validates amount too then uses current account deposit class method 
         Double amount = promptForAmount("deposit");
 
         if(amount == null)
         {
             return;
         }
-
+        //updates after to show changes
         currentAccount.deposit(amount);
         updateAccountScreen();
         showTransactionComplete("Deposit");
@@ -336,6 +350,7 @@ public class ATMFrame extends JFrame
 
     private void handleWithdraw()
     {
+    	//handles withdraw the same way as deposit
         if(!hasCurrentAccount())
         {
             return;
@@ -347,7 +362,7 @@ public class ATMFrame extends JFrame
         {
             return;
         }
-
+        //gives validation message to user if withdraw coudnt go through updates as well
         if(currentAccount.withdraw(amount) == 0)
         {
             JOptionPane.showMessageDialog(this, "Withdrawal could not be completed. Please check available funds.",
@@ -362,10 +377,12 @@ public class ATMFrame extends JFrame
 
     private Double promptForAmount(String transactionType)
     {
+    	//gives user pop up to enter amount for deposit/withdraw
         String enteredAmount = JOptionPane.showInputDialog(this,"Enter " + transactionType + " amount:",
                 transactionType.substring(0, 1).toUpperCase() + transactionType.substring(1),
                 JOptionPane.QUESTION_MESSAGE);
-
+        
+        //basic validation on entered amount
         if(enteredAmount == null)
         {
             return null;
@@ -392,6 +409,7 @@ public class ATMFrame extends JFrame
 
     private boolean hasCurrentAccount()
     {
+    	//account check validation just incase 
         if(currentAccount != null)
         {
             return true;
@@ -404,6 +422,7 @@ public class ATMFrame extends JFrame
 
     private void showTransactionComplete(String transactionType)
     {
+    	//another popup once transaction completes shows balance as well
         JOptionPane.showMessageDialog(this, transactionType + " complete. New balance: " + currentAccount.getBalance(),
                 transactionType + " Complete",
                 JOptionPane.INFORMATION_MESSAGE);
@@ -411,6 +430,7 @@ public class ATMFrame extends JFrame
 
     private void handleLogin()
     {
+    	//login method takes input with validation
         String enteredNumber = accountNumberField.getText().trim();
 
         if(enteredNumber.isEmpty())
@@ -428,7 +448,7 @@ public class ATMFrame extends JFrame
                 statusArea.setText("Please enter a valid account number.");
                 return;
             }
-
+            //uses the findaccount method to search for inputed matching account
             currentAccount = accountManager.findAccount(accountNumber);
 
             if(currentAccount != null)
@@ -452,6 +472,7 @@ public class ATMFrame extends JFrame
 
     private void updateAccountScreen()
     {
+    	//updates account screen post login to show name and account type and balance
         accountTypeLabel.setText(getAccountTypeName());
         accountBalanceLabel.setText(currentAccount.getBalance());
         accountHolderLabel.setText("Account holder: " + currentAccount.getFirst() + " " + currentAccount.getLast());
@@ -484,7 +505,7 @@ public class ATMFrame extends JFrame
     
     private void startSplashAnimation()
     {
-        // This Thread runs the five-second startup animation without blocking Swing.
+        //thread runs five second startup animation
         Thread splashThread = new Thread(() ->
         {
             long startTime = System.currentTimeMillis();
@@ -493,14 +514,13 @@ public class ATMFrame extends JFrame
             do
             {
                 long elapsedTime = System.currentTimeMillis() - startTime;
-                progress = (int)Math.min(100,
-                        elapsedTime * 100 / SPLASH_DURATION_MS);
+                progress = (int)Math.min(100, elapsedTime * 100 / SPLASH_DURATION_MS);
                 int currentProgress = progress;
 
-                // Swing components are updated on the event-dispatch thread.
-                SwingUtilities.invokeLater(() ->
-                        splashPanel.setProgress(currentProgress));
-
+                //swing components get updated on the event dispatch thread
+                SwingUtilities.invokeLater(() -> splashPanel.setProgress(currentProgress));
+                
+                //safe try catches
                 try
                 {
                     Thread.sleep(40);
@@ -513,7 +533,7 @@ public class ATMFrame extends JFrame
             }
             while(progress < 100);
 
-            // The final animation update transitions from the splash card to login.
+            //final animation update transitions from the splashscreen to login
             SwingUtilities.invokeLater(() ->
             {
                 splashPanel.setProgress(100);
@@ -526,11 +546,11 @@ public class ATMFrame extends JFrame
         splashThread.start();
     }
 
-    /**
-     * Draws the vault-door startup animation for the splash card.
-     */
+   
+     //draws the vault door startup animation for the splashscreen
     private static class SplashPanel extends JPanel
     {
+    	//field for the current progress time
         private int progress;
 
         SplashPanel()
@@ -539,6 +559,7 @@ public class ATMFrame extends JFrame
             setPreferredSize(new Dimension(400, 300));
         }
 
+        //update animation and refreash drawing
         void setProgress(int progress)
         {
             this.progress = Math.max(0, Math.min(100, progress));
@@ -549,11 +570,13 @@ public class ATMFrame extends JFrame
         protected void paintComponent(Graphics graphics)
         {
             super.paintComponent(graphics);
-
+            
+            //creates the actual graphic
             Graphics2D graphics2D = (Graphics2D)graphics.create();
             graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                     RenderingHints.VALUE_ANTIALIAS_ON);
 
+            //calculates the door
             int width = getWidth();
             int height = getHeight();
             int doorDiameter = Math.min(190,
@@ -567,10 +590,12 @@ public class ATMFrame extends JFrame
             drawVaultDoor(graphics2D, doorX, doorY, doorDiameter,
                     centerX, centerY);
             drawProgressBar(graphics2D, doorY + doorDiameter + 28, width);
-
+            
+            //gets ride of the graphic since we dont need it after
             graphics2D.dispose();
         }
 
+        //outer rings of the vault
         private void drawVaultRing(Graphics2D graphics2D, int doorX,
                                    int doorY, int doorDiameter)
         {
@@ -584,32 +609,33 @@ public class ATMFrame extends JFrame
                     doorDiameter - 28, doorDiameter - 28);
         }
 
-        private void drawVaultDoor(Graphics2D graphics2D, int doorX,
-                                   int doorY, int doorDiameter,
-                                   int centerX, int centerY)
+        //the actual door and animation
+        private void drawVaultDoor(Graphics2D graphics2D, int doorX,int doorY, int doorDiameter,int centerX, int centerY)
         {
+        	//calculates door opening on how long the progress bar is
             double opening = progress / 100.0;
             double doorWidth = 1.0 - opening * 0.68;
             int hingeX = doorX + 14;
-
+            
+            //transforms door
             Graphics2D doorGraphics = (Graphics2D)graphics2D.create();
             doorGraphics.translate(hingeX, 0);
             doorGraphics.scale(doorWidth, 1.0);
             doorGraphics.translate(-hingeX, 0);
-
+            
+            //main door
             doorGraphics.setColor(new Color(75, 93, 110));
             doorGraphics.fillOval(doorX + 14, doorY + 14,
                     doorDiameter - 28, doorDiameter - 28);
             doorGraphics.setColor(new Color(171, 181, 190));
             doorGraphics.setStroke(new BasicStroke(4));
-
+            
+            //creates the spokes this one is 6 can be however many
             for(int spoke = 0; spoke < 6; spoke++)
             {
                 double angle = spoke * Math.PI / 3 + opening * Math.PI / 4;
-                int spokeX = centerX + (int)(Math.cos(angle)
-                        * doorDiameter * 0.22);
-                int spokeY = centerY + (int)(Math.sin(angle)
-                        * doorDiameter * 0.22);
+                int spokeX = centerX + (int)(Math.cos(angle) * doorDiameter * 0.22);
+                int spokeY = centerY + (int)(Math.sin(angle) * doorDiameter * 0.22);
                 doorGraphics.drawLine(centerX, centerY, spokeX, spokeY);
             }
 
@@ -620,9 +646,10 @@ public class ATMFrame extends JFrame
             doorGraphics.dispose();
         }
 
-        private void drawProgressBar(Graphics2D graphics2D, int barY,
-                                     int width)
+        //draws the progress bar
+        private void drawProgressBar(Graphics2D graphics2D, int barY, int width)
         {
+        	//makes the size and position
             int barWidth = Math.min(320, width - 70);
             int barHeight = 16;
             int barX = (width - barWidth) / 2;
@@ -635,6 +662,7 @@ public class ATMFrame extends JFrame
             graphics2D.setColor(new Color(59, 67, 74));
             graphics2D.drawRoundRect(barX, barY, barWidth, barHeight, 12, 12);
 
+            //this is for the initializing underneath the bar
             graphics2D.setColor(NAVY);
             graphics2D.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 13));
             String message = "INITIALIZING...";

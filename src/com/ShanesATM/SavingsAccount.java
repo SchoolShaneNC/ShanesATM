@@ -4,18 +4,15 @@ import java.time.LocalDate;
 
 public class SavingsAccount extends BankAccount
 {
-    // Instance variable
-
+    //instance variable
     private double rate;
 
-    // Static class variables
-
+    //static variables
     private static double defaultRate = 0.04;
 
     private static double charge = 0.50;
 
-    // Constructors
-
+    //constructors
     public SavingsAccount(int number, LocalDate dateOpen)
     {
         super(number, dateOpen);
@@ -37,8 +34,7 @@ public class SavingsAccount extends BankAccount
         setRate(rate);
     }
 
-    // Getter and Setter
-
+    //gets and sets
     public double getRate()
     {
         return rate;
@@ -49,8 +45,7 @@ public class SavingsAccount extends BankAccount
         this.rate = (rate >= 0) ? rate : defaultRate;
     }
 
-    // Static Getters and Setters
-
+    //static gets and sets
     public static double getDefaultRate()
     {
         return defaultRate;
@@ -81,14 +76,11 @@ public class SavingsAccount extends BankAccount
         }
     }
 
-    // Business Logic
-
+    //buisness logic
     public double applyInterest()
     {
         double interest = balance * rate;
-
         balance += interest;
-
         return interest;
     }
 
@@ -101,16 +93,12 @@ public class SavingsAccount extends BankAccount
     @Override
     public double withdraw(double amount)
     {
-        if(amount > 0 &&
-           balance >= (amount + charge))
+        if(amount > 0 && balance >= (amount + charge))
         {
             amount += charge;
-
             balance -= amount;
-
             return amount;
         }
-
         return 0;
     }
 }

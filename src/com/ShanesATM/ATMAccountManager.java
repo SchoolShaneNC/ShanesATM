@@ -4,9 +4,9 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Creates and stores the bank accounts available to the ATM.
- */
+
+ //Creates and stores the bank accounts into an arraylist
+ 
 public class ATMAccountManager
 {
     private final List<BankAccount> accounts;
@@ -19,6 +19,8 @@ public class ATMAccountManager
 
     private void createInitialAccounts()
     {
+    	//initailizes all accounts and adds them into arraylist
+    	
         BankAccount account = new ChequingAccount(1001, LocalDate.of(2024, 1, 15), "Ava", "Martin");
         account.deposit(500.00);
         accounts.add(account);
@@ -56,17 +58,13 @@ public class ATMAccountManager
         accounts.add(account);
     }
 
+    
     public List<BankAccount> getAccounts()
     {
         return accounts;
     }
 
-    /**
-     * Finds an account with the supplied account number.
-     *
-     * @param accountNumber the number to find
-     * @return the matching account, or null when it is not in the collection
-     */
+  //loop to find account that matches based on inputed account number
     public BankAccount findAccount(int accountNumber)
     {
         for(BankAccount account : accounts)
@@ -80,6 +78,7 @@ public class ATMAccountManager
         return null;
     }
     
+    //small method to confirm an account exists 
     public boolean accountExists(int accountNumber)
     {
         return findAccount(accountNumber) != null;

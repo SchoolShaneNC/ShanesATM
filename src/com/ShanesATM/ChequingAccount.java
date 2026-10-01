@@ -3,16 +3,13 @@ import java.time.LocalDate;
 
 public class ChequingAccount extends BankAccount
 {
-    // Instance variable
-
+    //instance variable
     private double fee;
 
-    // Static variable
-
+    //static variable
     private static double defaultFee = 5.0;
 
-    // Constructors
-
+    //constructors
     public ChequingAccount(int number, LocalDate dateOpen)
     {
         super(number, dateOpen);
@@ -34,29 +31,25 @@ public class ChequingAccount extends BankAccount
         setFee(fee);
     }
 
-    // Getter
-
+    //getter
     public double getFee()
     {
         return fee;
     }
 
-    // Setter
-
+    //setter
     public void setFee(double fee)
     {
         this.fee = (fee >= 0) ? fee : defaultFee;
     }
 
-    // Static Getter
-
+    //static gets
     public static double getDefaultFee()
     {
         return defaultFee;
     }
 
-    // Static Setter
-
+    //static sets
     public static void setDefaultFee(double value)
     {
         if(value > 0)
@@ -65,12 +58,10 @@ public class ChequingAccount extends BankAccount
         }
     }
 
-    // Apply monthly fee
-
+    //apply monthly fee
     public double applyFee()
     {
         balance -= fee;
-
         return balance;
     }
 
@@ -86,10 +77,8 @@ public class ChequingAccount extends BankAccount
         if(amount > 0 && balance >= amount)
         {
             balance -= amount;
-
             return amount;
         }
-
         return 0;
     }
 }

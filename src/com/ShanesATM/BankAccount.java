@@ -3,25 +3,21 @@ import java.time.LocalDate;
 
 public abstract class BankAccount
 {
-    // Instance Variables
-
+    //instance Variables
     private final int number;
     private String first;
     private String last;
     protected double balance;
 
-    // Containment
-
+    //containment
     private final LocalDate dateOpen;
 
-    // Static and Constants
-
+    //static and constants
     private static int count = 0;
 
     private static final String BANKNAME = "The Sovereign Bank of SHANE";
 
-    // Constructors
-
+    //constructors
     public BankAccount(int number, LocalDate dateOpen)
     {
         setAccount();
@@ -43,8 +39,7 @@ public abstract class BankAccount
         setLast(last);
     }
 
-    // Initialization Method
-
+    //initialization method
     private void setAccount()
     {
         first = "Unknown";
@@ -54,8 +49,7 @@ public abstract class BankAccount
         count++;
     }
 
-    // Finalizer (similar to destructor)
-
+    //i guess we shouldnt have the deconstructors anymore
     @Override
     protected void finalize() throws Throwable
     {
@@ -63,8 +57,7 @@ public abstract class BankAccount
         super.finalize();
     }
 
-    // Getters and Setters
-
+    //gets and sets
     public String getFirst()
     {
         return first;
@@ -106,8 +99,7 @@ public abstract class BankAccount
         return String.format("$%.2f", balance);
     }
 
-    // Static Getters
-
+    //static gets
     public static String getBankName()
     {
         return BANKNAME;
@@ -118,8 +110,7 @@ public abstract class BankAccount
         return count;
     }
 
-    // Methods
-
+    //methods
     public double deposit(double amount)
     {
         if(amount > 0)
@@ -146,11 +137,9 @@ public abstract class BankAccount
             BankAccount temp = (BankAccount)obj;
             return this.number == temp.number;
         }
-
         return false;
     }
 
-    // Abstract Method
-
+    //abstract method
     public abstract double withdraw(double amount);
 }

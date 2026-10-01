@@ -2,9 +2,7 @@ package com.ShanesATM;
 
 import javax.swing.SwingUtilities;
 
-/**
- * Starts the ATM application.
- */
+//starts the atm application
 public class Program
 {
     public static void main(String[] args)
