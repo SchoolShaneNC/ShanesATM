@@ -21,7 +21,7 @@ public class ATMAccountManager
     {
     	//initailizes all accounts and adds them into arraylist
     	
-        BankAccount account = new ChequingAccount(1001, LocalDate.of(2024, 1, 15), "Ava", "Martin");
+        BankAccount account = new ChequingAccount(1001, LocalDate.of(2024, 1, 15), "Shane", "Milton");
         account.deposit(500.00);
         accounts.add(account);
 
